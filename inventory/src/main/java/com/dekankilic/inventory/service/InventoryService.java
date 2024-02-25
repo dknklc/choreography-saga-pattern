@@ -64,7 +64,22 @@ public class InventoryService {
             inventoryRepository.save(newInv);
         }
 
+    }
 
+    @KafkaListener(topics = "prod.payment.failed", groupId = "inventory-group")
+    public void handlePaymentFailedEvent(InventoryEvent inventoryEvent){
+        System.out.println("Reverse inventory event : " + inventoryEvent);
+        CustomerOrder customerOrder = inventoryEvent.getOrder();
+
+        try{
+            Optional<Inventory> inventory = inventoryRepository.findByItem(customerOrder.getItem()).stream().findFirst();
+            inventory.ifPresent(inv -> {
+                inv.setQuantity(inv.getQuantity() + customerOrder.getQuantity());
+                inventoryRepository.save(inventory.get());
+            });
+        } catch (Exception ex){
+            System.out.println("Exception occured while reverting order details");
+        }
     }
 
 }
