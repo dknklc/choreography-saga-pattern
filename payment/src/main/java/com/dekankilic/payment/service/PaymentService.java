@@ -10,6 +10,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -45,6 +47,22 @@ public class PaymentService {
                     .type("PAYMENT_FAILED")
                     .build();
             kafkaTemplateFailed.send("prod.payment.failed", String.valueOf(customerOrder.getOrderId()), invEvent);
+        }
+    }
+
+    @KafkaListener(topics = "prod.delivery.failed", groupId = "payment-group")
+    public void handlePaymentEvent(PaymentEvent paymentEvent){
+        System.out.println("Reverse inventory event : " + paymentEvent);
+        CustomerOrder customerOrder = paymentEvent.getOrder();
+
+        try{
+            Optional<Payment> payment = paymentRepository.findByOrderId(customerOrder.getOrderId());
+            payment.ifPresent(p -> {
+                p.setStatus("PAYMENT_CANCELED");
+                paymentRepository.save(p);
+            });
+        }catch (Exception ex){
+            System.out.println("Exception occured while reverting order details");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dekankilic.order.service;
 
 import com.dekankilic.order.dto.CustomerOrder;
+import com.dekankilic.order.dto.DeliveryEvent;
 import com.dekankilic.order.dto.OrderPlacedEvent;
 import com.dekankilic.order.model.Order;
 import com.dekankilic.order.repository.OrderRepository;
@@ -59,4 +60,18 @@ public class OrderService {
             System.out.println("Exception occured while reverting order details");
         }
     }
+
+    /*@KafkaListener(topics = "prod.delivery.completed", groupId = "order-group")
+    public void handleDeliveryEvent(DeliveryEvent deliveryEvent){
+        CustomerOrder customerOrder = deliveryEvent.getOrder();
+        try{
+            Optional<Order> order = orderRepository.findById(customerOrder.getOrderId());
+            order.ifPresent(o -> {
+                o.setStatus("ORDER_COMPLETED");
+                orderRepository.save(o);
+            });
+        } catch (Exception ex){
+            System.out.println("Exception occured while saving the order as completed");
+        }
+    }*/
 }

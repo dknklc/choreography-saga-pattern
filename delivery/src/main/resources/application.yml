@@ -1,5 +1,6 @@
+
 server:
-  port: 8080
+  port: 8083
 
 spring:
   kafka:
@@ -13,6 +14,7 @@ spring:
             add:
               type:
                 headers: false
+
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -20,11 +22,10 @@ spring:
         spring:
           json:
             trusted:
-              packages: com.dekankilic.order.dto.OrderPlacedEvent
+              packages: com.dekankilic.delivery.dto.PaymentEvent
             value:
               default:
-                type: com.dekankilic.order.dto.OrderPlacedEvent
-
+                type: com.dekankilic.delivery.dto.PaymentEvent
       group-id: order-group
   datasource:
     url: jdbc:mysql://localhost:3306/saga
