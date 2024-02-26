@@ -20,10 +20,10 @@ spring:
         spring:
           json:
             trusted:
-              packages: com.dekankilic.order.dto.OrderPlacedEvent
+              packages: com.dekankilic.order.dto.DeliveryEvent
             value:
               default:
-                type: com.dekankilic.order.dto.OrderPlacedEvent
+                type: com.dekankilic.order.dto.DeliveryEvent
 
       group-id: order-group
   datasource:

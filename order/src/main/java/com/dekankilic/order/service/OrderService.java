@@ -61,7 +61,7 @@ public class OrderService {
         }
     }
 
-    /*@KafkaListener(topics = "prod.delivery.completed", groupId = "order-group")
+    @KafkaListener(topics = "prod.delivery.completed", groupId = "order-group")
     public void handleDeliveryEvent(DeliveryEvent deliveryEvent){
         CustomerOrder customerOrder = deliveryEvent.getOrder();
         try{
@@ -73,5 +73,5 @@ public class OrderService {
         } catch (Exception ex){
             System.out.println("Exception occured while saving the order as completed");
         }
-    }*/
+    }
 }
